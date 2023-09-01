@@ -27,8 +27,11 @@ req.get() {
 server_name=create.zshlolol
 
 await() {
-	[ -z "$server" ] && \
+	if [ -z "$server" ]; then
 		req.get /servers name=$server_name | jq '.servers[0].id' | read server
+		[ "$server" = null ] && \
+			{ >&2 echo "SERVER DOESNT EXIST. RETURN 2"; return 2 }
+	fi
 	while true; do
 		req.get /servers/${server}/actions status=running | jq -e '.actions == []' >/dev/null && break
 		#req.get /servers/${server} | { jq -e '.server.locked' || break }

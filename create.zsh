@@ -29,7 +29,7 @@ if req.get /servers name=$server_name | jq -e '.servers[0].iso == null' >/dev/nu
 	req.post /servers/${server}/actions/reboot <<<'' # zuvor stand diese zeile erst nach attach_iso
 	await
 	req.post /servers/${server}/actions/attach_iso <<EOF
-	{ "iso": `req.get /isos architecture=arm | jq '.isos[] | select(.name | startswith("nixos")).id'` }
+	{ "iso": `req.get /isos architecture=arm | jq '.isos[] | select(.name | startswith("nixos")).id' | tail -1` }
 EOF
 else
 	>&2 echo "DETTACHING ISO"
