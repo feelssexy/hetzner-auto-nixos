@@ -24,6 +24,24 @@ req.get() {
 	req "$req" -G "$args[@]"
 }
 
+paginate() {
+	>&2 echo "PAGINATE"
+	content=( "`req.get "$@" per_page=100 page=1`" )
+	#>&2 echo "$content" # temp
+
+	jq -r '.meta.pagination | "\(.total_entries) \(.per_page)"' <<<$content[1] | read n per_page
+	#>&2 echo "\$(( ( ( $n - 1 ) / $per_page ) ))"
+	#>&2 echo $(( ( ( $n - 1 ) / $per_page ) ))
+	for page in `seq $(( ( ( $n - 1 ) / $per_page ) ))`; do
+		# when the arithmetic substitute returns 0
+		[ $page -eq 0 ] && break
+		let page+=1
+		content+="`req.get "$@" per_page=$per_page page=$page`"
+	done
+	${1#/}
+	echo "$content[@]" | jq 
+}
+
 server_name=create.zshlolol
 
 await() {
