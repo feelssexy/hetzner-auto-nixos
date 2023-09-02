@@ -33,7 +33,7 @@ paginate() {
 	#>&2 echo "\$(( ( ( $n - 1 ) / $per_page ) ))"
 	#>&2 echo $(( ( ( $n - 1 ) / $per_page ) ))
 	for page in `seq $(( ( ( $n - 1 ) / $per_page ) ))`; do
-		# when the arithmetic substitute returns 0
+		# when the arithmetic substitution returns 0
 		[ $page -eq 0 ] && break
 		let page+=1
 		content+="`req.get "$@" per_page=$per_page page=$page`"
