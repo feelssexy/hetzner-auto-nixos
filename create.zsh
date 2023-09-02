@@ -11,12 +11,12 @@ if req.get /servers name=$server_name | jq -e '.servers == []' >/dev/null; then
 	#cat <<EOF
 	req.post /servers <<EOF
 	{
-		"name": "$server_name", "server_type": "cax11", "location": "fsn1",
+		"name": "$server_name", "server_type": "cx11", "location": "fsn1",
 		"public_net": { "enable_ipv4": false,
 		"ipv6": `req.get /primary_ips | jq '.primary_ips[] | select(.assignee_id == null) | select(.name | endswith("_private")) | .id'` },
 		"networks": `req.get /networks name=yeaa | jq '.networks[].id' | jq -cs .`,
 		"ssh_keys": `req.get /ssh_keys | jq '.ssh_keys[] | .id' | jq -cs .`,
-		"image": `paginate /images status=available type=system architecture=arm | jq -c '.images[0].name'`
+		"image": `req.get /images status=available type=system architecture=x86 | jq -c '.images[0].name'`
 	}
 EOF
 fi
@@ -29,8 +29,10 @@ if req.get /servers name=$server_name | jq -e '.servers[0].iso == null' >/dev/nu
 	req.post /servers/${server}/actions/reboot <<<'' # zuvor stand diese zeile erst nach attach_iso
 	await
 	req.post /servers/${server}/actions/attach_iso <<EOF
-	{ "iso": `paginate /isos architecture=arm | jq '.isos[] | select(.name | startswith("nixos")).id' | tail -1` }
+	{ "iso": `paginate /isos architecture=x86 | jq '.isos[] | select(.name | startswith("arch")).id' | tail -1` }
 EOF
+	await
+	req.post /servers/${server}/actions/reboot <<<'' # zuvor stand diese zeile erst nach attach_iso
 else
 	>&2 echo "DETTACHING ISO"
 	await
