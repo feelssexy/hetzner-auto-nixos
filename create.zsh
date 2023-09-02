@@ -16,7 +16,7 @@ if req.get /servers name=$server_name | jq -e '.servers == []' >/dev/null; then
 		"ipv6": `req.get /primary_ips | jq '.primary_ips[] | select(.assignee_id == null) | select(.name | endswith("_private")) | .id'` },
 		"networks": `req.get /networks name=yeaa | jq '.networks[].id' | jq -cs .`,
 		"ssh_keys": `req.get /ssh_keys | jq '.ssh_keys[] | .id' | jq -cs .`,
-		"image": `req.get /images status=available type=system architecture=arm | jq -c '.images[0].name'`
+		"image": `paginate /images status=available type=system architecture=arm | jq -c '.images[0].name'`
 	}
 EOF
 fi
@@ -29,7 +29,7 @@ if req.get /servers name=$server_name | jq -e '.servers[0].iso == null' >/dev/nu
 	req.post /servers/${server}/actions/reboot <<<'' # zuvor stand diese zeile erst nach attach_iso
 	await
 	req.post /servers/${server}/actions/attach_iso <<EOF
-	{ "iso": `req.get /isos architecture=arm | jq '.isos[] | select(.name | startswith("nixos")).id' | tail -1` }
+	{ "iso": `paginate /isos architecture=arm | jq '.isos[] | select(.name | startswith("nixos")).id' | tail -1` }
 EOF
 else
 	>&2 echo "DETTACHING ISO"

@@ -38,8 +38,9 @@ paginate() {
 		let page+=1
 		content+="`req.get "$@" per_page=$per_page page=$page`"
 	done
-	${1#/}
-	echo "$content[@]" | jq 
+
+	for json in $content[@]; do jq ".${1#/}[]" <<<$json; done | jq -s "{\"${1#/}\": .}"
+	#jq ".${1#/}[]"<<<$content  | jq -s "{\"${1#/}\": .}" # this works too apparently
 }
 
 server_name=create.zshlolol
