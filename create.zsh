@@ -12,8 +12,9 @@ if req.get /servers name=$server_name | jq -e '.servers == []' >/dev/null; then
 	req.post /servers <<EOF
 	{
 		"name": "$server_name", "server_type": "cax21", "location": "fsn1",
-		"public_net": { "ipv4": `req.get /primary_ips | jq '.primary_ips[] | select(.assignee_id == null) | select(.name | endswith("_private")) | .id'`,
-		"ipv6": `req.get /primary_ips | jq '.primary_ips[] | select(.assignee_id == null) | select(.name | endswith("_private")) | .id'` },
+		"public_net": {
+		"ipv4": `req.get /primary_ips | jq '.primary_ips[] | select(.assignee_id == null) | select(.name | endswith("_private")) | select(.type == "ipv4") | .id'`,
+		"ipv6": `req.get /primary_ips | jq '.primary_ips[] | select(.assignee_id == null) | select(.name | endswith("_private")) | select(.type == "ipv6") | .id'` },
 		"networks": `req.get /networks name=yeaa | jq '.networks[].id' | jq -cs .`,
 		"ssh_keys": `req.get /ssh_keys | jq '.ssh_keys[] | .id' | jq -cs .`,
 		"image": `paginate /images status=available type=system architecture=arm | jq -c '.images[0].name'`

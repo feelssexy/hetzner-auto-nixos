@@ -47,12 +47,12 @@ ssh tee -a .ssh/known_hosts <<< "10.1.0.2 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK
 ssh ssh user@$myip -fND 1080
 sed -i '/ Hewwo$/d' ~/.ssh/authorized_keys # dangerous
 ssh tee -a /etc/profile.local <<< $'export all_proxy=socks5h://localhost:1080\nexport ALL_PROXY="$all_proxy"'
-
 # better way to set env please?
 #ssh bash -c \''all_proxy=socks5h://localhost:1080 nixos-install'\'
+
 ssh mkdir -m 700 /mnt/root/.ssh
 ssh cp /mnt/etc/nixos/nixkey /etc/nixos
-echo {/mnt,}/root/.ssh/config | ssh xargs -I{} cp /mnt/etc/nixos/sshconfig {}
+echo -n {/mnt,}/root/.ssh/config | ssh xargs -I{} -d'" "'  cp /mnt/etc/nixos/sshconfig {}
 #ssh cp /mnt/etc/nixos/sshconfig /root/.ssh/config
 #ssh cp /mnt/etc/nixos/sshconfig /mnt/root/.ssh/config
 
