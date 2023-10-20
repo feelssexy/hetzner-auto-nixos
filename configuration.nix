@@ -111,7 +111,7 @@
   services.openssh.enable = true;
   #services.openssh.addr = [  ];
   services.openssh = {
-    #listenAddresses = [ { addr = "10.0.0.1"; port = 22; } ];
+    listenAddresses = [ { addr = "10.0.0.1"; port = 22; } ];
     #openFirewall = true;
     forwardX11 = true;
     gatewayPorts = "clientspecified";
