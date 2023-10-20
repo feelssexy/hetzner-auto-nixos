@@ -10,7 +10,10 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./hetzner.nix
+      "./discord-bots (legacy).nix"
     ];
+
+  pkgs.writeFile
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -24,7 +27,7 @@
   #networking.proxy.allProxy = "socks5h://localhost:1080";
 
   # Set your time zone.
-  time.timeZone = "Europe/Amsterdam";
+  time.timeZone = "Europe/Berlin";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -77,6 +80,8 @@
     wget curl fd bat
 
     zsh zsh-nix-shell
+
+    python3
   ];
 
   programs.neovim.defaultEditor = true;
@@ -107,13 +112,13 @@
   #services.openssh.addr = [  ];
   services.openssh = {
     #listenAddresses = [ { addr = "10.0.0.1"; port = 22; } ];
-    openFirewall = false;
+    #openFirewall = true;
     forwardX11 = true;
     gatewayPorts = "clientspecified";
   };
 
 
-  networking.firewall.interfaces.enp7s1.allowedTCPPorts = [ 22 ];
+  networking.firewall.interfaces.enp7s0.allowedTCPPorts = [ 22 ];
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

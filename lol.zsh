@@ -4,13 +4,13 @@ set -e
 host="${1:-root@10.1.0.3}"
 myip="10.1.0.2"
 ssh() {
-	command ssh $host "$@"
+	command ssh -o StrictHostKeyChecking=no $host "$@"
 }
 echo $host
 
 #sed -i '/^10\.1\.0\.3/d' ~/.ssh/known_hosts # dangerous command, doesn't change with $host
 ssh-keygen -R 10.1.0.3
-ssh-copy-id $host
+ssh-copy-id -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no $host
 ssh umount -R /mnt || true # necessary for reruns
 ssh fdisk /dev/sda <<EOF
 g

@@ -11,8 +11,8 @@ if req.get /servers name=$server_name | jq -e '.servers == []' >/dev/null; then
 	#cat <<EOF
 	req.post /servers <<EOF
 	{
-		"name": "$server_name", "server_type": "cax11", "location": "fsn1",
-		"public_net": { "enable_ipv4": false,
+		"name": "$server_name", "server_type": "cax21", "location": "fsn1",
+		"public_net": { "ipv4": `req.get /primary_ips | jq '.primary_ips[] | select(.assignee_id == null) | select(.name | endswith("_private")) | .id'`,
 		"ipv6": `req.get /primary_ips | jq '.primary_ips[] | select(.assignee_id == null) | select(.name | endswith("_private")) | .id'` },
 		"networks": `req.get /networks name=yeaa | jq '.networks[].id' | jq -cs .`,
 		"ssh_keys": `req.get /ssh_keys | jq '.ssh_keys[] | .id' | jq -cs .`,
@@ -32,7 +32,7 @@ if req.get /servers name=$server_name | jq -e '.servers[0].iso == null' >/dev/nu
 	{ "iso": `paginate /isos architecture=arm | jq '.isos[] | select(.name | startswith("nixos")).id' | tail -1` }
 EOF
 else
-	>&2 echo "DETTACHING ISO"
+	>&2 echo "DETACHING ISO"
 	await
 	req.post /servers/${server}/actions/reboot <<<''
 	await
