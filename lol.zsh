@@ -50,6 +50,15 @@ ssh tee -a /etc/profile.local <<< $'export all_proxy=socks5h://localhost:1080\ne
 
 # better way to set env please?
 #ssh bash -c \''all_proxy=socks5h://localhost:1080 nixos-install'\'
+ssh mkdir -m 700 /mnt/root/.ssh
+ssh cp /mnt/etc/nixos/nixkey /etc/nixos
+echo {/mnt,}/root/.ssh/config | ssh xargs -I{} cp /mnt/etc/nixos/sshconfig {}
+#ssh cp /mnt/etc/nixos/sshconfig /root/.ssh/config
+#ssh cp /mnt/etc/nixos/sshconfig /mnt/root/.ssh/config
+
+ssh rm -rf /mnt/etc/nixos
+ssh git clone git@github.com:nixvps/nixos-configuration.git /mnt/etc/nixos 
+
 ssh bash -lc nixos-install
 ssh-keygen -R 10.1.0.3
 

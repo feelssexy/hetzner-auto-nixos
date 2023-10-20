@@ -1,0 +1,6 @@
+Host github.com
+  User git
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+  IdentityFile /etc/nixos/nixkey
+

@@ -10,10 +10,10 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./hetzner.nix
-      "./discord-bots (legacy).nix"
+      ./"discord-bots (legacy).nix"
     ];
 
-  pkgs.writeFile
+  #pkgs.writeText "/root/.ssh/"
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
